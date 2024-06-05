@@ -57,7 +57,7 @@ const handler = new Elysia()
     switch (checkTokenResult.status) {
       case TokenStatus.valid: {
         const emailAddress = `${checkTokenResult.payload?.localPart as string}@tmpee.work`;
-        const emails = db.query("SELECT * FROM emails WHERE recipientAddress = ?").all(emailAddress);
+        const emails = db.query("SELECT id, date, senderAddress, subject FROM emails WHERE recipientAddress = ?").all(emailAddress);
         return emails;
       }
       case TokenStatus.invalid:
@@ -67,6 +67,39 @@ const handler = new Elysia()
       }
     }
   })
+  .get(
+    "/email/:id",
+    async ({ cookie: { auth }, db, jwt, params: { id }, set }) => {
+      const checkTokenResult = await checkToken(jwt, auth.value);
+
+      // 권한이 없으면 error 보내도록 수정해야 함.
+      switch (checkTokenResult.status) {
+        case TokenStatus.valid: {
+          const emailAddress = `${checkTokenResult.payload?.localPart as string}@tmpee.work`;
+          const email = db.query("SELECT * FROM emails WHERE id = $id").get({
+            $id: id,
+          });
+
+          if (email.recipientAddress != emailAddress) {
+            set.status = 401;
+            return "Unauthorized";
+          }
+
+          return email;
+        }
+        case TokenStatus.invalid:
+        case TokenStatus.notExist: {
+          set.status = 401;
+          return "Unauthorized";
+        }
+      }
+    },
+    {
+      params: t.Object({
+        id: t.Numeric(),
+      }),
+    }
+  )
   .get(
     "/sign",
     async ({ cookie: { auth }, jwt, query }) => {
