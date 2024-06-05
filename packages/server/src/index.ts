@@ -18,8 +18,18 @@ const emailHandler = new Elysia()
     "/email",
     async ({ body, db, set }) => {
       const id = await db
-        .query("INSERT INTO emails (date, sender, recipient, subject, content_html) VALUES (?, ?, ?, ?, ?) RETURNING id")
-        .get(body.date.toISOString(), body.sender.address, body.recipient.address, body.subject, body.contentHtml);
+        .query(
+          "INSERT INTO emails (date, senderName, senderAddress, recipientName, recipientAddress, subject, contentHtml) VALUES (?, ?, ?, ?, ?) RETURNING id"
+        )
+        .get(
+          body.date.toISOString(),
+          body.sender.name,
+          body.sender.address,
+          body.recipient.name,
+          body.recipient.address,
+          body.subject,
+          body.contentHtml
+        );
       set.status = 201;
       return id;
     },
@@ -49,7 +59,7 @@ const emailHandler = new Elysia()
 
     const emailAddress = `${value.localPart as string}@tmpee.work`;
 
-    const emails = db.query("SELECT * FROM emails WHERE recipient = ?").all(emailAddress);
+    const emails = db.query("SELECT * FROM emails WHERE recipientAddress = ?").all(emailAddress);
 
     return emails;
   });
