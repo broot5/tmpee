@@ -3,10 +3,12 @@ import { swagger } from "@elysiajs/swagger";
 import { createDatabase } from "./db";
 import { jwt } from "@elysiajs/jwt";
 import { generate } from "generate-passphrase";
+import { checkToken, TokenStatus } from "./auth";
 
 const JWT_SECRET = process.env.JWT_SECRET ?? "very secret password";
+const JWT_EXPIRATION_TIME = 10 * 60; // 10 minutes
 
-const emailHandler = new Elysia()
+const handler = new Elysia()
   .use(
     jwt({
       name: "jwt",
@@ -19,7 +21,7 @@ const emailHandler = new Elysia()
     async ({ body, db, set }) => {
       const id = await db
         .query(
-          "INSERT INTO emails (date, senderName, senderAddress, recipientName, recipientAddress, subject, contentHtml) VALUES (?, ?, ?, ?, ?) RETURNING id"
+          "INSERT INTO emails (date, senderName, senderAddress, recipientName, recipientAddress, subject, contentHtml) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id"
         )
         .get(
           body.date.toISOString(),
@@ -50,43 +52,51 @@ const emailHandler = new Elysia()
     }
   )
   .get("/email", async ({ cookie: { auth }, db, jwt, set }) => {
-    const value = await jwt.verify(auth.value);
+    const checkTokenResult = await checkToken(jwt, auth.value);
 
-    if (!value) {
-      set.status = 401;
-      return "Unauthorized";
+    switch (checkTokenResult.status) {
+      case TokenStatus.valid: {
+        const emailAddress = `${checkTokenResult.payload?.localPart as string}@tmpee.work`;
+        const emails = db.query("SELECT * FROM emails WHERE recipientAddress = ?").all(emailAddress);
+        return emails;
+      }
+      case TokenStatus.invalid:
+      case TokenStatus.notExist: {
+        set.status = 401;
+        return "Unauthorized";
+      }
     }
+  })
+  .get(
+    "/sign",
+    async ({ cookie: { auth }, jwt, query }) => {
+      const checkTokenResult = await checkToken(jwt, auth.value);
 
-    const emailAddress = `${value.localPart as string}@tmpee.work`;
-
-    const emails = db.query("SELECT * FROM emails WHERE recipientAddress = ?").all(emailAddress);
-
-    return emails;
-  });
-
-const authHandler = new Elysia({ prefix: "/auth" })
-  .use(
-    jwt({
-      name: "jwt",
-      secret: JWT_SECRET,
-    })
+      if (checkTokenResult.status == TokenStatus.valid && !(query.force == 1)) {
+        const localPart = checkTokenResult.payload?.localPart as string;
+        const emailAddress = `${localPart}@tmpee.work`;
+        return emailAddress;
+      } else {
+        const localPart = generate({ length: 3, fast: true });
+        const token = await jwt.sign({ localPart });
+        auth.set({
+          value: token,
+          httpOnly: true,
+          maxAge: JWT_EXPIRATION_TIME,
+          path: "/",
+        });
+        const emailAddress = `${localPart}@tmpee.work`;
+        return emailAddress;
+      }
+    },
+    {
+      query: t.Object({
+        force: t.Optional(t.Numeric({ default: 0 })),
+      }),
+    }
   )
-  .get("/sign", async ({ cookie: { auth }, jwt }) => {
-    const localPart = generate({ length: 3, fast: true });
-    const token = await jwt.sign({ localPart });
+  .get("/", () => Bun.file("../client/index.html"));
 
-    auth.set({
-      value: token,
-      httpOnly: true,
-      maxAge: 10 * 60, // 10 minutes
-      path: "/",
-    });
-
-    const emailAddress = `${localPart}@tmpee.work`;
-
-    return emailAddress;
-  });
-
-const app = new Elysia().use(swagger()).use(authHandler).use(emailHandler).listen(3000);
+const app = new Elysia().use(swagger()).use(handler).listen(3000);
 
 export type App = typeof app;
