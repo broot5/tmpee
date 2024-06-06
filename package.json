@@ -1,6 +1,11 @@
 {
   "name": "tmpee",
   "private": "true",
+  "scripts": {
+    "deploy-worker": "bun --filter '@tmpee/worker' deploy",
+    "serve": "bun --filter '@tmpee/server' serve",
+    "dev-server": "bun --filter '@tmpee/server' dev"
+  },
   "workspaces": ["packages/*"],
   "type": "module",
   "devDependencies": {
