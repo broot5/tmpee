@@ -1,6 +1,6 @@
 import { jwt } from "@elysiajs/jwt";
 import { Elysia, t } from "elysia";
-import { generate } from "generate-passphrase";
+import { generate } from "random-words";
 
 import { jwtMiddleware } from "../middleware/jwt";
 import { DOMAIN, JWT_EXPIRATION_TIME } from "../utils/constants";
@@ -16,7 +16,7 @@ export const signRouter = new Elysia().use(jwt(jwtMiddleware)).get(
       const emailAddress = `${localPart ?? "Undefined"}@${DOMAIN}`;
       return emailAddress;
     } else {
-      const localPart = generate({ length: 3, fast: true });
+      const localPart = generate({ exactly: 3, join: "-" });
       const token = await jwt.sign({ localPart });
       auth.set({
         value: token,
