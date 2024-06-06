@@ -35,7 +35,7 @@ export const emailRouter = new Elysia()
 
       switch (checkTokenResult.status) {
         case TokenStatus.valid: {
-          const emailAddress = `${checkTokenResult.payload?.localPart as string}@${DOMAIN}`;
+          const emailAddress = `${checkTokenResult.payload?.localPart ?? "Undefined"}@${DOMAIN}`;
 
           const emails = db.getEmailList(emailAddress);
 
@@ -62,7 +62,7 @@ export const emailRouter = new Elysia()
                 <label>+{Math.round((new Date().valueOf() - Date.parse(email.date).valueOf()) / (1000 * 60)).toString()} min</label>
               </a>
             ))
-            .join(<div class="divider"></div>);
+            .join(`<div class="divider"></div>`);
 
           return <article>{list}</article>;
         }
@@ -86,7 +86,7 @@ export const emailRouter = new Elysia()
 
       switch (checkTokenResult.status) {
         case TokenStatus.valid: {
-          const emailAddress = `${checkTokenResult.payload?.localPart as string}@${DOMAIN}`;
+          const emailAddress = `${checkTokenResult.payload?.localPart ?? "Undefined"}@${DOMAIN}`;
 
           const email = await db.getEmail(id);
 

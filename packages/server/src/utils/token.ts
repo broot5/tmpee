@@ -1,5 +1,3 @@
-import type { JWTPayloadSpec } from "@elysiajs/jwt";
-
 export const enum TokenStatus {
   valid,
   invalid,
@@ -8,13 +6,15 @@ export const enum TokenStatus {
 
 interface CheckTokenResult {
   status: TokenStatus;
-  payload?: JWTPayloadSpec | string;
+  payload?: {
+    localPart: string;
+  };
 }
 
 export async function checkToken(
   jwt: {
-    readonly sign: (morePayload: Record<string, string | number> & JWTPayloadSpec) => Promise<string>;
-    readonly verify: (jwt?: string | undefined) => Promise<JWTPayloadSpec | false>;
+    readonly sign: (morePayload: { localPart: string }) => Promise<string>;
+    readonly verify: (jwt?: string | undefined) => Promise<{ localPart: string } | false>;
   },
   token: string | undefined
 ): Promise<CheckTokenResult> {

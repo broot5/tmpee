@@ -12,8 +12,8 @@ export const signRouter = new Elysia().use(jwt(jwtMiddleware)).get(
     const checkTokenResult = await checkToken(jwt, auth.value);
 
     if (checkTokenResult.status == TokenStatus.valid && !(query.force == 1)) {
-      const localPart = checkTokenResult.payload?.localPart as string;
-      const emailAddress = `${localPart}@${DOMAIN}`;
+      const localPart = checkTokenResult.payload?.localPart;
+      const emailAddress = `${localPart ?? "Undefined"}@${DOMAIN}`;
       return emailAddress;
     } else {
       const localPart = generate({ length: 3, fast: true });

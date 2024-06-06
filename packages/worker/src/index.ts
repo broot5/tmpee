@@ -8,7 +8,7 @@ export interface Env {
 }
 
 export default {
-  async email(message: EmailMessage, env: Env) {
+  async email(message: ForwardableEmailMessage, env: Env) {
     const rawEmail = new Response(message.raw);
     const arrayBuffer = await rawEmail.arrayBuffer();
     const email = await PostalMime.parse(arrayBuffer);
