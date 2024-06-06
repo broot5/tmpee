@@ -13,6 +13,8 @@ export const homeRouter = new Elysia().get("/", () => (
         crossorigin="anonymous"
       ></script>
 
+      <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
       <link href="https://cdn.jsdelivr.net/npm/beercss@3.5.6/dist/cdn/beer.min.css" rel="stylesheet" />
       <script type="module" src="https://cdn.jsdelivr.net/npm/beercss@3.5.6/dist/cdn/beer.min.js"></script>
       <script
@@ -27,8 +29,32 @@ export const homeRouter = new Elysia().get("/", () => (
           <button class="circle transparent" hx-get="/sign?force=1" hx-trigger="click" hx-target="#email-address">
             <i>casino</i>
           </button>
-          <label class="switch icon">
-            <input type="checkbox" />
+          <button
+            class="circle transparent"
+            x-data="{ 
+              rgb: `#000000`,
+              rgbChanged() {
+                ui(`theme`, this.rgb);
+              } 
+            }"
+          >
+            <i>palette</i>
+            <input type="color" x-model="rgb" x-on:change="rgbChanged" />
+          </button>
+          <label
+            class="switch icon"
+            x-data="{ 
+              toggle: false,
+              toggleChanged() {
+                if (this.toggle) {
+                  ui(`mode`, `dark`);
+                } else {
+                  ui(`mode`, `light`);
+                }
+              } 
+            }"
+          >
+            <input type="checkbox" x-model="toggle" x-on:change="toggleChanged" />
             <span>
               <i>dark_mode</i>
             </span>
