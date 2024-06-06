@@ -1,8 +1,9 @@
 import { jwt } from "@elysiajs/jwt";
-import { Elysia,t } from "elysia";
+import { Elysia, t } from "elysia";
 
 import { EmailDatabase } from "../middleware/db";
 import { jwtMiddleware } from "../middleware/jwt";
+import { DOMAIN } from "../utils/constants";
 import { checkToken, TokenStatus } from "../utils/token";
 
 export const emailRouter = new Elysia()
@@ -34,7 +35,7 @@ export const emailRouter = new Elysia()
 
       switch (checkTokenResult.status) {
         case TokenStatus.valid: {
-          const emailAddress = `${checkTokenResult.payload?.localPart as string}@tmpee.work`;
+          const emailAddress = `${checkTokenResult.payload?.localPart as string}@${DOMAIN}`;
 
           const emails = db.getEmailList(emailAddress);
 
@@ -85,7 +86,7 @@ export const emailRouter = new Elysia()
 
       switch (checkTokenResult.status) {
         case TokenStatus.valid: {
-          const emailAddress = `${checkTokenResult.payload?.localPart as string}@tmpee.work`;
+          const emailAddress = `${checkTokenResult.payload?.localPart as string}@${DOMAIN}`;
 
           const email = await db.getEmail(id);
 

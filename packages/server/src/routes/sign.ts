@@ -3,7 +3,7 @@ import { Elysia, t } from "elysia";
 import { generate } from "generate-passphrase";
 
 import { jwtMiddleware } from "../middleware/jwt";
-import { JWT_EXPIRATION_TIME } from "../utils/constants";
+import { DOMAIN, JWT_EXPIRATION_TIME } from "../utils/constants";
 import { checkToken, TokenStatus } from "../utils/token";
 
 export const signRouter = new Elysia().use(jwt(jwtMiddleware)).get(
@@ -13,7 +13,7 @@ export const signRouter = new Elysia().use(jwt(jwtMiddleware)).get(
 
     if (checkTokenResult.status == TokenStatus.valid && !(query.force == 1)) {
       const localPart = checkTokenResult.payload?.localPart as string;
-      const emailAddress = `${localPart}@tmpee.work`;
+      const emailAddress = `${localPart}@${DOMAIN}`;
       return emailAddress;
     } else {
       const localPart = generate({ length: 3, fast: true });
@@ -24,7 +24,7 @@ export const signRouter = new Elysia().use(jwt(jwtMiddleware)).get(
         maxAge: JWT_EXPIRATION_TIME,
         path: "/",
       });
-      const emailAddress = `${localPart}@tmpee.work`;
+      const emailAddress = `${localPart}@${DOMAIN}`;
       return emailAddress;
     }
   },
