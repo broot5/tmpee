@@ -4,6 +4,7 @@ import { createDatabase } from "./db";
 import { jwt } from "@elysiajs/jwt";
 import { generate } from "generate-passphrase";
 import { checkToken, TokenStatus } from "./auth";
+import { emailListHTMLGenerator, emailDialogHTMLGenerator } from "./html";
 
 const JWT_SECRET = process.env.JWT_SECRET ?? "very secret password";
 const JWT_EXPIRATION_TIME = 10 * 60; // 10 minutes
@@ -57,8 +58,10 @@ const handler = new Elysia()
     switch (checkTokenResult.status) {
       case TokenStatus.valid: {
         const emailAddress = `${checkTokenResult.payload?.localPart as string}@tmpee.work`;
-        const emails = db.query("SELECT id, date, senderAddress, subject FROM emails WHERE recipientAddress = ?").all(emailAddress);
-        return emails;
+        const emails: { id: number; date: string; senderAddress: string; subject: string }[] = db
+          .query("SELECT id, date, senderAddress, subject FROM emails WHERE recipientAddress = ?")
+          .all(emailAddress);
+        return emailListHTMLGenerator(emails);
       }
       case TokenStatus.invalid:
       case TokenStatus.notExist: {
@@ -72,7 +75,6 @@ const handler = new Elysia()
     async ({ cookie: { auth }, db, jwt, params: { id }, set }) => {
       const checkTokenResult = await checkToken(jwt, auth.value);
 
-      // 권한이 없으면 error 보내도록 수정해야 함.
       switch (checkTokenResult.status) {
         case TokenStatus.valid: {
           const emailAddress = `${checkTokenResult.payload?.localPart as string}@tmpee.work`;
@@ -85,7 +87,7 @@ const handler = new Elysia()
             return "Unauthorized";
           }
 
-          return email;
+          return emailDialogHTMLGenerator(email);
         }
         case TokenStatus.invalid:
         case TokenStatus.notExist: {
