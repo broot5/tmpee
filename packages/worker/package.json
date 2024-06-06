@@ -1,20 +1,16 @@
 {
   "name": "@tmpee/worker",
   "version": "0.0.0",
-  "private": true,
   "scripts": {
     "deploy": "wrangler deploy",
     "dev": "wrangler dev",
     "start": "wrangler dev",
-    "test": "vitest",
     "cf-typegen": "wrangler types"
   },
   "devDependencies": {
-    "@cloudflare/vitest-pool-workers": "^0.1.19",
     "@cloudflare/workers-types": "^4.20240605.0",
     "elysia": "latest",
     "typescript": "^5.4.5",
-    "vitest": "1.3.0",
     "wrangler": "^3.59.0"
   },
   "dependencies": {
