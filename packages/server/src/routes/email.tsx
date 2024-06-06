@@ -88,7 +88,7 @@ export const emailRouter = new Elysia()
         case TokenStatus.valid: {
           const emailAddress = `${checkTokenResult.payload?.localPart ?? "Undefined"}@${DOMAIN}`;
 
-          const email = await db.getEmail(id);
+          const email = db.getEmail(id);
 
           if (email.recipientAddress != emailAddress) {
             set.status = 401;

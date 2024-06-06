@@ -44,16 +44,16 @@ export class EmailDatabase {
   getEmailList(recipientAddress: string): EmailList {
     const emailList = this.db.query("SELECT id, date, senderAddress, subject FROM emails WHERE recipientAddress = ?").all(recipientAddress);
 
-    return emailList;
+    return emailList as EmailList;
   }
 
-  async getEmail(id: number): Promise<Email> {
-    const email = await this.db
+  getEmail(id: number): Email {
+    const email = this.db
       .query("SELECT date, senderName, senderAddress, recipientName, recipientAddress, subject, contentHtml FROM emails WHERE id = $id")
       .get({
         $id: id,
       });
 
-    return email;
+    return email as Email;
   }
 }
