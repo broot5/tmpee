@@ -1,6 +1,8 @@
 import type { Email } from "@tmpee/shared";
 import { Database } from "bun:sqlite";
 
+import { DB_PATH } from "../utils/constants";
+
 type EmailList = {
   id: number;
   date: string;
@@ -12,7 +14,7 @@ export class EmailDatabase {
   private db: Database;
 
   constructor() {
-    this.db = new Database("emails.db");
+    this.db = new Database(DB_PATH);
     this.init();
   }
 

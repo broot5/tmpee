@@ -1,4 +1,8 @@
-export const DOMAIN = "tmpee.work";
+export const PORT = process.env.PORT;
 
-export const JWT_SECRET = process.env.JWT_SECRET ?? "very secret password";
-export const JWT_EXPIRATION_TIME = 10 * 60; // 10 minutes
+export const DOMAIN = process.env.DOMAIN;
+
+export const DB_PATH = process.env.DB_PATH;
+
+export const JWT_SECRET = process.env.JWT_SECRET;
+export const JWT_EXPIRATION_TIME = process.env.JWT_EXPIRATION_TIME; // seconds
