@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 // @ts-check
 
 import eslint from '@eslint/js';
-import tseslint from 'typescript-eslint';
 import prettierConfig from 'eslint-config-prettier';
+import simpleImportSort from "eslint-plugin-simple-import-sort";
+import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
   eslint.configs.recommended,
@@ -16,8 +18,13 @@ export default tseslint.config(
         tsconfigRootDir: import.meta.dirname,
       },
     },
+    plugins: {
+      "simple-import-sort": simpleImportSort,
+    },
     rules: {
-      "@typescript-eslint/naming-convention": "warn"
+      "@typescript-eslint/naming-convention": "warn",
+      "simple-import-sort/imports": "warn",
+      "simple-import-sort/exports": "warn",
     }
   },
 );

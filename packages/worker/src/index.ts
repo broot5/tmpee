@@ -1,8 +1,7 @@
-import PostalMime from "postal-mime";
 import { treaty } from "@elysiajs/eden";
 import type { App } from "@tmpee/server";
 import type { Email } from "@tmpee/shared";
-import { newAddress } from "./utils";
+import PostalMime from "postal-mime";
 
 export default {
   async email(message: EmailMessage) {
@@ -12,8 +11,10 @@ export default {
 
     const body: Email = {
       date: new Date(email.date ?? ""),
-      sender: newAddress(email.from),
-      recipient: newAddress(email.to[0]),
+      senderName: email.from.name,
+      senderAddress: email.from.address ?? "Undefined",
+      recipientName: email.to[0].name,
+      recipientAddress: email.to[0].address ?? "Undefined",
       subject: email.subject ?? "Undefined",
       contentHtml: email.html ?? "Undefined",
     };

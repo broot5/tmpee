@@ -1,12 +1,9 @@
-export interface Address {
-  name: string;
-  address: string;
-}
-
 export interface Email {
   date: Date;
-  sender: Address;
-  recipient: Address;
+  senderName: string;
+  senderAddress: string;
+  recipientName: string;
+  recipientAddress: string;
   subject: string;
   contentHtml: string;
 }

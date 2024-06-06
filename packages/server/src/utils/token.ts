@@ -6,7 +6,7 @@ export const enum TokenStatus {
   notExist,
 }
 
-export interface CheckTokenResult {
+interface CheckTokenResult {
   status: TokenStatus;
   payload?: JWTPayloadSpec | string;
 }
@@ -16,9 +16,9 @@ export async function checkToken(
     readonly sign: (morePayload: Record<string, string | number> & JWTPayloadSpec) => Promise<string>;
     readonly verify: (jwt?: string | undefined) => Promise<JWTPayloadSpec | false>;
   },
-  token: string
+  token: string | undefined
 ): Promise<CheckTokenResult> {
-  if (token) {
+  if (token != undefined) {
     const value = await jwt.verify(token);
 
     if (value) {
