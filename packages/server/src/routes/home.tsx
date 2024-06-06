@@ -23,7 +23,7 @@ export const homeRouter = new Elysia().get("/", () => (
       ></script>
     </head>
     <body class="light">
-      <header>
+      <header class="primary-container">
         <nav>
           <h5 class="max">tmpee</h5>
           <button class="circle transparent" hx-get="/sign?force=1" hx-trigger="click" hx-target="#email-address">
@@ -61,7 +61,7 @@ export const homeRouter = new Elysia().get("/", () => (
           </label>
         </nav>
         <div class="small-space"></div>
-        <h5 class="medium-padding" id="email-address" hx-get="/sign" hx-trigger="every 1s"></h5>
+        <h5 class="large-padding" id="email-address" hx-get="/sign" hx-trigger="every 1s"></h5>
       </header>
       <main class="responsive">
         <div hx-get="/email" hx-trigger="every 1s">

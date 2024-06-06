@@ -96,13 +96,13 @@ export const emailRouter = new Elysia()
           }
 
           return (
-            <dialog class="active medium">
+            <dialog class="active">
               <h5>{email.subject}</h5>
               <p>
                 {email.senderName}({email.senderAddress})
               </p>
               {email.contentHtml}
-              <nav class="right-align bottom">
+              <nav class="right-align">
                 <button hx-trigger="click" hx-get="data:text/html," hx-target="#dialog">
                   <i>close</i>
                   <span>Close</span>
