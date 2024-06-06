@@ -1,3 +1,14 @@
+/* eslint-disable @typescript-eslint/naming-convention */
+declare module "bun" {
+  interface Env {
+    PORT: number;
+    DOMAIN: string;
+    DB_PATH: string;
+    JWT_SECRET: string;
+    JWT_EXPIRATION_TIME: number;
+  }
+}
+
 export const PORT = process.env.PORT;
 
 export const DOMAIN = process.env.DOMAIN;
