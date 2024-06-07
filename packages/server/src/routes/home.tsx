@@ -43,7 +43,18 @@ export const homeRouter = new Elysia().get("/", () => (
           x-init="$nextTick(() => { changeDarkMode(darkMode); changeColor(color); })"
         >
           <h5 class="max">tmpee</h5>
-          <button class="circle transparent" hx-get="/sign?force=1" hx-trigger="click" hx-target="#email-address">
+          <button
+            class="circle transparent"
+            x-data="{
+              copy(text) {
+                navigator.clipboard.writeText(text);
+              }
+            }"
+            x-on:click="copy(document.querySelector('#emailAddress').innerText)"
+          >
+            <i>content_copy</i>
+          </button>
+          <button class="circle transparent" hx-get="/sign?force=1" hx-trigger="click" hx-target="#emailAddress">
             <i>casino</i>
           </button>
           <button class="circle transparent">
@@ -58,7 +69,7 @@ export const homeRouter = new Elysia().get("/", () => (
           </label>
         </nav>
         <div class="small-space"></div>
-        <h5 class="large-padding" id="email-address" hx-get="/sign" hx-trigger="every 1s">
+        <h5 id="emailAddress" class="large-padding" hx-get="/sign" hx-trigger="every 1s">
           &nbsp;
         </h5>
       </header>
