@@ -13,6 +13,7 @@ export const homeRouter = new Elysia().get("/", () => (
         crossorigin="anonymous"
       ></script>
 
+      <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/persist@3.x.x/dist/cdn.min.js"></script>
       <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
       <link href="https://cdn.jsdelivr.net/npm/beercss@3.5.6/dist/cdn/beer.min.css" rel="stylesheet" />
@@ -23,49 +24,49 @@ export const homeRouter = new Elysia().get("/", () => (
       ></script>
     </head>
     <body class="light">
-      <header class="primary-container">
-        <nav>
+      <header class="responsive primary-container bottom-round">
+        <nav
+          x-data="{
+            color: $persist('#000000'),
+            darkMode: $persist(false),
+            changeColor(rgb) {
+              ui('theme', rgb);
+            },
+            changeDarkMode(isDark) {
+              if (isDark) {
+                ui('mode', 'dark');
+              } else {
+                ui('mode', 'light'); 
+              }
+            }
+          }"
+          x-init="$nextTick(() => { changeDarkMode(darkMode); changeColor(color); })"
+        >
           <h5 class="max">tmpee</h5>
           <button class="circle transparent" hx-get="/sign?force=1" hx-trigger="click" hx-target="#email-address">
             <i>casino</i>
           </button>
-          <button
-            class="circle transparent"
-            x-data="{ 
-              rgb: `#000000`,
-              rgbChanged() {
-                ui(`theme`, this.rgb);
-              } 
-            }"
-          >
+          <button class="circle transparent">
             <i>palette</i>
-            <input type="color" x-model="rgb" x-on:change="rgbChanged" />
+            <input type="color" x-model="color" x-on:change="changeColor(color)" />
           </button>
-          <label
-            class="switch icon"
-            x-data="{ 
-              toggle: false,
-              toggleChanged() {
-                if (this.toggle) {
-                  ui(`mode`, `dark`);
-                } else {
-                  ui(`mode`, `light`);
-                }
-              } 
-            }"
-          >
-            <input type="checkbox" x-model="toggle" x-on:change="toggleChanged" />
+          <label class="switch icon">
+            <input type="checkbox" x-model="darkMode" x-on:change="changeDarkMode(darkMode)" />
             <span>
               <i>dark_mode</i>
             </span>
           </label>
         </nav>
         <div class="small-space"></div>
-        <h5 class="large-padding" id="email-address" hx-get="/sign" hx-trigger="every 1s"></h5>
+        <h5 class="large-padding" id="email-address" hx-get="/sign" hx-trigger="every 1s">
+          &nbsp;
+        </h5>
       </header>
       <main class="responsive">
         <div hx-get="/email" hx-trigger="every 1s">
-          <progress class="circle center"></progress>
+          <div class="active overlay blur center-align middle-align">
+            <progress class="circle"></progress>
+          </div>
         </div>
         <div id="dialog"></div>
       </main>
