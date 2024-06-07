@@ -21,6 +21,7 @@ export const signRouter = new Elysia().use(jwt(jwtMiddleware)).get(
       auth.set({
         value: token,
         httpOnly: true,
+        sameSite: "strict",
         maxAge: JWT_EXPIRATION_TIME,
         path: "/",
       });
