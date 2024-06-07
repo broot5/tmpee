@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { treaty } from "@elysiajs/eden";
 import type { App } from "@tmpee/server";
 import type { Email } from "@tmpee/shared";
@@ -5,6 +6,7 @@ import PostalMime from "postal-mime";
 
 export interface Env {
   API_HOST: string;
+  API_KEY: string;
 }
 
 export default {
@@ -23,8 +25,12 @@ export default {
       contentHtml: email.html ?? "Undefined",
     };
 
+    const headers = {
+      authorization: `Bearer ${env.API_KEY}`,
+    };
+
     const client = treaty<App>(env.API_HOST);
 
-    await client.email.post(body);
+    await client.email.post(body, { headers });
   },
 };

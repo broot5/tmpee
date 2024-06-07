@@ -6,6 +6,7 @@ declare module "bun" {
     DB_PATH: string;
     JWT_SECRET: string;
     JWT_EXPIRATION_TIME: number;
+    API_KEY: string;
   }
 }
 
@@ -17,3 +18,5 @@ export const DB_PATH = process.env.DB_PATH;
 
 export const JWT_SECRET = process.env.JWT_SECRET;
 export const JWT_EXPIRATION_TIME = process.env.JWT_EXPIRATION_TIME; // seconds
+
+export const API_KEY = process.env.API_KEY;

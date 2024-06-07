@@ -3,7 +3,7 @@ import { Elysia, t } from "elysia";
 
 import { EmailDatabase } from "../middleware/db";
 import { jwtMiddleware } from "../middleware/jwt";
-import { DOMAIN } from "../utils/constants";
+import { API_KEY, DOMAIN } from "../utils/constants";
 import { checkToken, TokenStatus } from "../utils/token";
 
 export const emailRouter = new Elysia()
@@ -11,12 +11,20 @@ export const emailRouter = new Elysia()
   .decorate("db", new EmailDatabase())
   .post(
     "/email",
-    async ({ body, db, set }) => {
+    async ({ body, db, headers, set }) => {
+      if (headers.authorization != `Bearer ${API_KEY}`) {
+        set.status = 401;
+        return "Unauthorized";
+      }
+
       const id = await db.addEmail(body);
       set.status = 201;
       return id;
     },
     {
+      headers: t.Object({
+        authorization: t.String(),
+      }),
       body: t.Object({
         date: t.Date(),
         senderName: t.String(),
