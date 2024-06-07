@@ -18,4 +18,4 @@ RUN bun install --frozen-lockfile --production
 COPY packages/ packages/
 
 USER bun
-ENTRYPOINT [ "bun", "run", "serve" ]
+ENTRYPOINT [ "bun", "server", "serve" ]
