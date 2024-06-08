@@ -49,7 +49,7 @@ export const emailRouter = new Elysia()
 
           if (emails.length == 0) {
             return (
-              <article class="round medium middle-align center-align">
+              <article class="medium middle-align center-align round">
                 <div>
                   <i class="extra">mail</i>
                   <h5>You have no new messages</h5>
@@ -59,7 +59,13 @@ export const emailRouter = new Elysia()
           }
 
           const list = emails.reverse().map((email) => (
-            <a hx-get={`/email/${email.id.toString()}`} hx-trigger="click" hx-target="#dialog" class="row padding wave round">
+            <a
+              hx-trigger="click"
+              hx-get={`/email/${email.id.toString()}`}
+              hx-target="#dialog"
+              hx-swap="outerHTML swap:0.2s"
+              class="row padding wave round"
+            >
               <button class="circle">{email.senderAddress.at(0)?.toUpperCase()}</button>
               <div class="max">
                 <h6 class="small">{email.subject}</h6>
@@ -101,14 +107,20 @@ export const emailRouter = new Elysia()
           }
 
           return (
-            <dialog class="active">
+            <dialog id="dialog" class="active fade-me-in fade-me-out">
               <h5>{email.subject}</h5>
               <p>
                 {email.senderName}({email.senderAddress})
               </p>
               {email.contentHtml}
               <nav class="right-align">
-                <button class="responsive" hx-trigger="click" hx-get="data:text/html," hx-target="#dialog">
+                <button
+                  class="responsive"
+                  hx-trigger="click"
+                  hx-get="data:text/html,<div id='dialog' class='fade-me-out'></div>"
+                  hx-target="#dialog"
+                  hx-swap="outerHTML swap:0.2s"
+                >
                   <i>close</i>
                   <span>Close</span>
                 </button>

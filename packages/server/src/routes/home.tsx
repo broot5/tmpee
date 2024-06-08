@@ -22,6 +22,22 @@ export const homeRouter = new Elysia().get("/", () => (
         type="module"
         src="https://cdn.jsdelivr.net/npm/material-dynamic-colors@1.1.0/dist/cdn/material-dynamic-colors.min.js"
       ></script>
+
+      <style>
+        {`
+          .fade-me-in.htmx-added {
+            opacity: 0;
+          }
+          .fade-me-in {
+            opacity: 1;
+            transition: opacity 0.2s ease-out;
+          }
+          .fade-me-out.htmx-swapping {
+            opacity: 0;
+            transition: opacity 0.2s ease-out;
+          }
+      `}
+      </style>
     </head>
     <body class="light">
       <header class="responsive primary-container bottom-round">
@@ -46,7 +62,7 @@ export const homeRouter = new Elysia().get("/", () => (
           <button class="circle transparent" x-on:click="navigator.clipboard.writeText(document.querySelector('#emailAddress').innerText)">
             <i>content_copy</i>
           </button>
-          <button class="circle transparent" hx-get="/sign?force=1" hx-trigger="click" hx-target="#emailAddress">
+          <button class="circle transparent" hx-trigger="click" hx-get="/sign?force=1" hx-target="#emailAddress">
             <i>casino</i>
           </button>
           <button class="circle transparent">
@@ -61,17 +77,20 @@ export const homeRouter = new Elysia().get("/", () => (
           </label>
         </nav>
         <div class="small-space"></div>
-        <h5 id="emailAddress" class="large-padding" hx-get="/sign" hx-trigger="every 1s">
-          &nbsp;
-        </h5>
+        <div>
+          <h5 id="emailAddress" class="large-padding" hx-trigger="every 1s" hx-get="/sign" hx-indicator="#progress">
+            &nbsp;
+          </h5>
+          <progress id="progress" class="htmx-indicator"></progress>
+        </div>
       </header>
       <main class="responsive">
-        <div hx-get="/email" hx-trigger="every 1s">
+        <div hx-trigger="every 1s" hx-get="/email">
           <div class="active overlay blur center-align middle-align">
             <progress class="circle"></progress>
           </div>
         </div>
-        <div id="dialog"></div>
+        <div id="dialog" class="fade-me-in fade-me-out"></div>
       </main>
       <footer class="responsive top-round">
         <a class="link" href="https://github.com/broot5/tmpee">
