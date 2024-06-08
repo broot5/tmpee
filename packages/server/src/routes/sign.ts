@@ -8,33 +8,38 @@ import { checkToken, TokenStatus } from "../utils/token";
 
 export const signRouter = new Elysia().use(jwt(jwtMiddleware)).get(
   "/sign",
-  async ({ cookie: { auth }, jwt, query }) => {
-    const checkTokenResult = await checkToken(jwt, auth.value);
+  async ({ cookie: { auth }, jwt, query, set }) => {
+    let localPart: string;
 
-    if (checkTokenResult.status == TokenStatus.valid && !(query.force == 1)) {
-      const localPart = checkTokenResult.payload?.localPart;
-      const emailAddress = `${localPart ?? "Undefined"}@${DOMAIN}`;
-      return emailAddress;
+    if (query.refresh == 1) {
+      const checkTokenResult = await checkToken(jwt, auth.value);
+      if (checkTokenResult.status == TokenStatus.valid) {
+        localPart = checkTokenResult.payload?.localPart ?? "";
+      } else {
+        set.status = 401;
+        return "Unauthorized";
+      }
     } else {
-      const localPart = generate({ exactly: 3, join: "-" });
-      const token = await jwt.sign({ localPart });
-      auth.set({
-        value: token,
-        httpOnly: true,
-        sameSite: "strict",
-        maxAge: JWT_EXPIRATION_TIME,
-        path: "/",
-      });
-      const emailAddress = `${localPart}@${DOMAIN}`;
-      return emailAddress;
+      localPart = generate({ exactly: 3, join: "-" });
     }
+
+    const token = await jwt.sign({ localPart });
+    auth.set({
+      value: token,
+      httpOnly: true,
+      sameSite: "strict",
+      maxAge: JWT_EXPIRATION_TIME,
+      path: "/",
+    });
+    const emailAddress = `${localPart}@${DOMAIN}`;
+    return emailAddress;
   },
   {
     cookie: t.Object({
       auth: t.Optional(t.String()),
     }),
     query: t.Object({
-      force: t.Optional(t.Numeric({ default: 0 })),
+      refresh: t.Optional(t.Numeric({ default: 0 })),
     }),
   }
 );

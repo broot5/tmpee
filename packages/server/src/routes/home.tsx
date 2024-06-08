@@ -62,7 +62,10 @@ export const homeRouter = new Elysia().get("/", () => (
           <button class="circle transparent" x-on:click="navigator.clipboard.writeText(document.querySelector('#emailAddress').innerText)">
             <i>content_copy</i>
           </button>
-          <button class="circle transparent" hx-trigger="click" hx-get="/sign?force=1" hx-target="#emailAddress">
+          <button class="circle transparent" hx-trigger="click" hx-get="/sign?refresh=1" hx-target="#emailAddress">
+            <i>restart_alt</i>
+          </button>
+          <button class="circle transparent" hx-trigger="click" hx-get="/sign" hx-target="#emailAddress">
             <i>casino</i>
           </button>
           <button class="circle transparent">
