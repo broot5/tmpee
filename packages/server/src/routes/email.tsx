@@ -80,7 +80,7 @@ export const emailRouter = new Elysia()
         case TokenStatus.invalid:
         case TokenStatus.notExist: {
           set.status = 401;
-          return "Unauthorized";
+          return <div hx-trigger="load" hx-get="/sign" hx-target="#emailAddress"></div>; // GET /sign when token is not valid
         }
       }
     },

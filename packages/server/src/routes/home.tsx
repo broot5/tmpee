@@ -78,7 +78,7 @@ export const homeRouter = new Elysia().get("/", () => (
         </nav>
         <div class="small-space"></div>
         <div>
-          <h5 id="emailAddress" class="large-padding" hx-trigger="every 1s" hx-get="/sign" hx-indicator="#progress">
+          <h5 id="emailAddress" class="large-padding" hx-trigger="load" hx-get="/sign" hx-indicator="#progress">
             &nbsp;
           </h5>
           <progress id="progress" class="htmx-indicator"></progress>
