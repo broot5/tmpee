@@ -29,7 +29,6 @@ export const emailRouter = new Elysia()
         date: t.Date(),
         senderName: t.String(),
         senderAddress: t.String(),
-        recipientName: t.String(),
         recipientAddress: t.String(),
         subject: t.String(),
         contentHtml: t.String(),

@@ -20,11 +20,10 @@ export default {
     }
 
     const body: Email = {
-      date: new Date(email.date ?? ""),
+      date: new Date(email.date ?? 0),
       senderName: email.from.name,
       senderAddress: email.from.address ?? "Undefined",
-      recipientName: email.to[0].name,
-      recipientAddress: email.to[0].address ?? "Undefined",
+      recipientAddress: message.to,
       subject: email.subject ?? "Undefined",
       contentHtml: email.html ?? "Undefined",
     };
