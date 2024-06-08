@@ -1,0 +1,14 @@
+services:
+  tmpee:
+    image: ghcr.io/broot5/tmpee:latest
+    container_name: tmpee
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      DOMAIN: "tmpee.work"
+      DB_PATH: ":memory:"
+      JWT_SECRET: "secret"
+      JWT_EXPIRATION_TIME: "600"
+      API_KEY: "00000000-0000-0000-0000-000000000000"
