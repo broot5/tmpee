@@ -1,0 +1,23 @@
+name: Deploy worker
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy worker
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          packageManager: bun
+          workingDirectory: "packages/worker"
+          secrets: |
+            API_KEY
+        env:
+          API_KEY: ${{ secrets.API_KEY }}
