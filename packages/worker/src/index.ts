@@ -15,6 +15,10 @@ export default {
     const arrayBuffer = await rawEmail.arrayBuffer();
     const email = await PostalMime.parse(arrayBuffer);
 
+    if (email.to == undefined) {
+      return;
+    }
+
     const body: Email = {
       date: new Date(email.date ?? ""),
       senderName: email.from.name,
